@@ -33,6 +33,7 @@ export interface JobListing {
   job_apply_link: string;
   job_highlights: {
     Qualifications?: string[];
+    Benefits?: string[];
     Responsibilities?: string[];
   };
 }

@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import type { JobListing } from "@/helpers/types";
 import { JobCard } from "./job-card";
 import { LoadingSpinner } from "./loading-spinner";
-
+import { v4 as uuid } from "uuid";
 interface JobsListProps {
   readonly jobs: JobListing[];
   readonly loading: boolean;
@@ -58,7 +58,7 @@ export function JobsList({
               key={job.job_id}
               ref={index === jobs.length - 1 ? lastJobElementRef : null}
             >
-              <JobCard job={job} />
+              <JobCard key={uuid()} job={job} />
             </div>
           ))}
         </div>

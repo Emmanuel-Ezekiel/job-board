@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Share2, Twitter, Facebook } from "lucide-react";
+import { Globe } from "lucide-react";
 import { ApplicationModal } from "@/app/components/application-modal";
 import type { JobListing } from "@/helpers/types";
 import { LoadingSpinner } from "@/app/components/loading-spinner";
+import Link from "next/link";
 
 interface JobDetailsProps {
   id: string;
@@ -15,6 +16,8 @@ export function JobDetails({ id }: JobDetailsProps) {
   const [job, setJob] = useState<JobListing | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log(job);
 
   useEffect(() => {
     // Try to get job from localStorage first
@@ -60,14 +63,14 @@ export function JobDetails({ id }: JobDetailsProps) {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
-            <Button variant="outline" size="icon" className="w-10 h-10">
-              <Twitter className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="w-10 h-10">
-              <Facebook className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="w-10 h-10">
-              <Share2 className="h-4 w-4" />
+            <Button asChild variant="outline" size="icon" className="w-10 h-10">
+              <Link
+                href={job.employer_website ?? ""}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Globe className="h-4 w-4" />
+              </Link>
             </Button>
             <Button
               onClick={() => setIsModalOpen(true)}
@@ -82,11 +85,12 @@ export function JobDetails({ id }: JobDetailsProps) {
         <div className="space-y-6">
           <section>
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
-              Role Expectations
+              Role Description
             </h2>
-            <div className="prose max-w-none text-sm sm:text-base">
-              {job.job_description}
-            </div>
+            <div
+              className="prose max-w-none text-sm sm:text-base space-y-4"
+              dangerouslySetInnerHTML={{ __html: job.job_description }}
+            />
           </section>
 
           {job.job_highlights?.Qualifications && (
@@ -115,6 +119,19 @@ export function JobDetails({ id }: JobDetailsProps) {
                     <li key={i}>{resp}</li>
                   )
                 )}
+              </ul>
+            </section>
+          )}
+
+          {job.job_highlights?.Benefits && (
+            <section>
+              <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
+                Company Benefits
+              </h2>
+              <ul className="list-disc pl-5 sm:pl-6 space-y-1 sm:space-y-2 text-sm sm:text-base">
+                {job.job_highlights.Benefits.map((resp: string, i: number) => (
+                  <li key={i}>{resp}</li>
+                ))}
               </ul>
             </section>
           )}
