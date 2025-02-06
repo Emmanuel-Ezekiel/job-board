@@ -17,13 +17,15 @@ export function JobDetails({ id }: JobDetailsProps) {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log(job);
-
   useEffect(() => {
+    // Attempt to retrieve job details from localStorage first (caching).
+    // This is primarily done because the /job-details API endpoint is currently
+    // returning a 500 error, preventing us from fetching the data directly.
     // Try to get job from localStorage first
     const savedJob = localStorage.getItem("selectedJob");
 
     if (savedJob) {
+      // Job found in localStorage, parse and set state
       setJob(JSON.parse(savedJob));
       setLoading(false);
     } else {
@@ -34,6 +36,11 @@ export function JobDetails({ id }: JobDetailsProps) {
       if (foundJob) {
         setJob(foundJob);
       } else {
+        // Job not found in localStorage or cached list.  Normally, we would make an API
+        // call here to fetch the job details.  However, the API is currently
+        // unavailable (returning a 500 error), so we cannot do that.  We log an
+        // error and set loading to false to prevent infinite loading.
+
         // Handle case where job isn't found
         console.error("Job not found in local storage");
       }
